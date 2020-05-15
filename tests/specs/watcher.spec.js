@@ -18,20 +18,26 @@ afterEach(() => {
 });
 
 describe('Watcher API', () => {
+  test('it resolve on start events', () => {
+    monetize.when('start').then((data) => {
+      expect(data.paymentPointer).toBeTruthy();
+      expect(data.requestId).toBeTruthy();
+    });
+
+    document.monetization.fire('monetizationstart');
+
+    expect.assertions(2);
+  });
+
   test('it resolve on pending events', () => {
-    document.monetization.fireAfter('monetizationstart', 2);
-    document.monetization.fireAfter('monetizationpending', 5);
-
-    monetize.pointer('$wallet').then((watcher) => {
-      watcher.when('pending').then((data) => {
-        expect(data.paymentPointer).toBeTruthy();
-        expect(data.requestId).toBeTruthy();
-      });
+    monetize.when('pending').then((data) => {
+      expect(data.paymentPointer).toBeTruthy();
+      expect(data.requestId).toBeTruthy();
     });
 
-    return wait(30).then(() => {
-      expect.assertions(2);
-    });
+    document.monetization.fire('monetizationpending');
+
+    expect.assertions(2);
   });
 
   test('it resolve on progress events', () => {
@@ -40,48 +46,30 @@ describe('Watcher API', () => {
       assetCode: 'XRP',
     };
 
-    document.monetization.fireAfter('monetizationstart', 3);
-    document.monetization.fireAfter('monetizationprogress', 10, { detail });
-
-    monetize.pointer('$wallet').then((watcher) => {
-      watcher.when('progress').then((data) => {
-        expect(data.amount).toEqual(detail.amount);
-        expect(data.assetCode).toEqual(detail.assetCode);
-      });
+    monetize.when('progress').then((data) => {
+      expect(data.amount).toEqual(detail.amount);
+      expect(data.assetCode).toEqual(detail.assetCode);
     });
 
-    return wait(20).then(() => {
-      expect.assertions(2);
-    });
+    document.monetization.fire('monetizationprogress', { detail });
+    expect.assertions(2);
   });
 
   test('it resolve on stop events', () => {
-    document.monetization.fireAfter('monetizationstart', 3);
-    document.monetization.fireAfter('monetizationstop', 5);
-
-    monetize.pointer('$wallet').then((watcher) => {
-      watcher.when('stop').then((data) => {
-        expect(data.paymentPointer).toBeTruthy();
-        expect(data.requestId).toBeTruthy();
-      });
+    monetize.when('stop').then((data) => {
+      expect(data.paymentPointer).toBeTruthy();
+      expect(data.requestId).toBeTruthy();
     });
 
-    return wait(10).then(() => {
-      expect.assertions(2);
-    });
+    document.monetization.fire('monetizationstop');
+    expect.assertions(2);
   });
 
   test('it does not recognize invalid events', () => {
-    document.monetization.fireAfter('monetizationstart', 3);
-
-    monetize.pointer('$wallet').then((watcher) => {
-      watcher.when('foo').then().catch((e) => {
-        expect(e.message).toEqual('Event \'foo\' is not supported.');
-      });
+    monetize.when('foo').then().catch((e) => {
+      expect(e.message).toEqual('Event \'foo\' is not supported.');
     });
 
-    return wait(10).then(() => {
-      expect.assertions(1);
-    });
+    expect.assertions(1);
   });
 });

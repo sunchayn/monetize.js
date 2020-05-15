@@ -66,8 +66,9 @@ describe('Configuration', () => {
     };
 
     document.monetization = null;
+    monetize.refresh();
+    monetize.configure(config);
 
-    monetize.configure(config).refresh();
     expect(document.body.classList.contains(monetize.config.classes.disabled)).toBeTruthy();
   });
 

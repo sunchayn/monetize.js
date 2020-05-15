@@ -8,6 +8,7 @@ const eventMapping = {
   pending: 'monetizationpending',
   progress: 'monetizationprogress',
   stop: 'monetizationstop',
+  start: 'monetizationstart',
 };
 
 /**

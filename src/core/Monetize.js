@@ -30,6 +30,7 @@ class Monetize {
     this.activePointer = null;
 
     this.init();
+    this.observeHead();
   }
 
   /**
@@ -43,19 +44,20 @@ class Monetize {
 
     if (!document.monetization) {
       this.enabled = false;
-
-      if (this.config.addClasses) {
-        document.body.classList.add(this.config.classes.disabled);
-      }
-
       return;
     }
 
-    if (this.config.addClasses) {
-      document.body.classList.add(this.config.classes.enabled);
-    }
-
     this.enabled = true;
+  }
+
+  observeHead() {
+    (new MutationObserver(() => {
+      const pointer = this.detectPointerFromMetaTag();
+
+      if (pointer) {
+        this.activePointer = pointer;
+      }
+    })).observe(document.head, { childList: true });
   }
 
   /**
@@ -65,7 +67,22 @@ class Monetize {
    */
   configure(options) {
     this.config = merge(this.default, options);
+
+    if (this.config.addClasses) {
+      this._addServiceStatusClass();
+    }
+
     return this;
+  }
+
+  _addServiceStatusClass() {
+    if (this.isEnabled()) {
+      document.body.classList.remove(this.config.classes.disabled);
+      document.body.classList.add(this.config.classes.enabled);
+    } else {
+      document.body.classList.remove(this.config.classes.enabled);
+      document.body.classList.add(this.config.classes.disabled);
+    }
   }
 
   /**
@@ -85,14 +102,12 @@ class Monetize {
         this.registerCssClasses();
       }
 
-      const candidatePointer = pointer || this.detectPointerFromMetaTag();
-
-      if (!candidatePointer) {
+      if (pointer) {
+        this.setupMetaTag(pointer);
+      } else if (!this.detectPointerFromMetaTag()) {
         reject(new Error('You have to provide a wallet.'));
         return true;
       }
-
-      this.setupMetaTag(candidatePointer);
 
       document.monetization.addEventListener('monetizationstart', (event) => {
         resolve(this.watcher.initializedWith(event, this.amount));
@@ -235,6 +250,14 @@ class Monetize {
     this.init();
     clearInterval(this._timer);
     return this;
+  }
+
+  /**
+   * Proxy for watcher.
+   * @returns {PromiseLoop}
+   */
+  when(...args) {
+    return this.watcher.when.apply(null, args);
   }
 
   /**
