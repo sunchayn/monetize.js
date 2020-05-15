@@ -13,6 +13,8 @@ module.exports = [
     filename: output,
     library: 'monetize',
     libraryTarget: 'umd',
+    libraryExport: 'default',
+    globalObject: 'this',
   },
   devtool,
   optimization: {
