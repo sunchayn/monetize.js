@@ -1,4 +1,4 @@
-import monetize from '../../src';
+import monetize from '../../src/monetize';
 
 const MonetizationFake = require('../fake/monetization');
 

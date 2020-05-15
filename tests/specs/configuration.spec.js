@@ -1,6 +1,6 @@
 import Monetize from '../../src/core/Monetize';
 
-import monetize from '../../src';
+import monetize from '../../src/monetize';
 
 const MonetizationFake = require('../fake/monetization');
 

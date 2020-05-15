@@ -1,0 +1,222 @@
+*, ::after, ::before {
+  box-sizing: border-box;
+}
+
+.simulator-panel {
+  position: fixed;
+  z-index: 10;
+  right: 0;
+  bottom: 0;
+
+  width: 320px;
+  max-width: 100%;
+  padding: 1rem;
+  margin: 0 1rem 1rem 0;
+
+  box-shadow: 0 0 25px rgba(#ccc, .5);
+  border: 1px solid #eee;
+  border-radius: 5px;
+
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  line-height: 1.5;
+
+  & > footer {
+    color: #444;
+    font-size: 0.9rem;
+    & > small > a {
+      color: #444;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  & h1, & h2 {
+    font-size: 1.2rem;
+    font-weight: normal;
+    margin-top: 0;
+    margin-bottom: .5rem;
+  }
+
+  & h2 {
+    font-size: 1rem;
+  }
+
+  & section {
+    margin-bottom: .5rem;
+  }
+}
+
+.simulation-panel_section {
+
+  &.is-hidden {
+    display: none;
+  }
+}
+
+.simulator-panel_buttons {
+  display: flex;
+}
+
+.simulator-panel_button {
+  position: relative;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: .2rem .5rem;
+  margin-right: .5rem;
+  border-radius: .25rem;
+  border: 1px solid transparent;
+
+  font-size: .875rem;
+  line-height: 1.25rem;
+  font-weight: 500;
+
+  color: #fff;
+  background-color: #3182ce;
+
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, .1), 0 2px 4px -1px rgba(0, 0, 0, .06);
+
+  transition: background-color .3s ease,box-shadow .3s ease;
+  user-select: none;
+  &:hover {
+    background-color: #4299e1;
+    box-shadow: 0 1px 3px 0 rgba(0,0,0,.1), 0 1px 2px 0 rgba(0,0,0,.06);
+    text-decoration: underline;
+  }
+
+  &:active,
+  &:focus {
+    background-color: #2b6cb0;
+    border-color: #90cdf4;
+    box-shadow: 0 0 0 3px rgba(66,153,225,.5);
+    outline: 0;
+  }
+
+  &.is-hidden {
+    display: none;
+  }
+
+  &[disabled] {
+    opacity: .8;
+    pointer-events: none;
+  }
+}
+
+/**
+* Simulation status icon.
+ */
+
+// Origin code for the rings => @see: https://codepen.io/chrisunderdown/pen/JeXNoz
+@mixin rings($duration, $delay) {
+  content: '';
+
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  opacity: 0;
+
+  display: none;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+
+  height: 100%;
+  width: 100%;
+
+  border: 8px solid rgba(#0ce770, 0.4);
+  border-radius: 100%;
+
+  animation-name: ripple;
+  animation-duration: $duration;
+  animation-delay: $delay;
+  animation-iteration-count: infinite;
+  animation-timing-function: cubic-bezier(.65, 0, .34, 1);
+}
+@keyframes ripple {
+  from {
+    opacity: 1;
+    transform: scale3d(0.8, 0.8, 1);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale3d(1.8, 1.8, 1);
+  }
+}
+// --
+
+@keyframes pulsingOpacity {
+  from {
+    opacity: 0.6;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.simulator-panel_state {
+  position: absolute;
+  z-index: 999;
+  width: 30px;
+  height: 30px;
+  top: 0;
+  left: 50%;
+
+  transform: translate(-50%, -150%);
+
+  & > .wrapper {
+    position: relative;
+    z-index: 2;
+    width: 30px;
+    height: 30px;
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 100%;
+    box-shadow: 0 0 10px 0 rgba(0,0,0,0.25);
+  }
+
+  & .icon {
+    color: #ccc;
+    fill: currentColor;
+  }
+
+  &::after {
+    @include rings(2s, 0s);
+  }
+
+  &::before {
+    @include rings(2s, 1s);
+  }
+
+  &.is-sending {
+    & .icon {
+      color: #0ce770;
+      animation: pulsingOpacity 1s .5s cubic-bezier(0.65, 0, 0.34, 1) alternate-reverse infinite;
+    }
+
+    &::after {
+      display: flex;
+    }
+
+    &::before {
+      display: flex;
+    }
+  }
+
+  &.is-pending .icon{
+    color: #ffd341;
+  }
+
+  &.is-stopped .icon{
+    color: #ff5a58;
+  }
+}

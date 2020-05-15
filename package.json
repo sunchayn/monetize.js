@@ -1,7 +1,7 @@
 {
   "name": "monetize",
   "version": "0.0.0-auto",
-  "description": "An event-driven library to manage Web Monetization.",
+  "description": "An event-driven library to manage and simulate Web Monetization.",
   "main": "dist/monetize.js",
   "repository": {
     "type": "git",
@@ -17,6 +17,7 @@
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack --hide-modules --config=webpack.config.js --mode=production",
     "dev": "cross-env NODE_ENV=dev webpack --progress --colors --hide-modules --config=webpack.config.js",
+    "watch": "npm run dev -- --watch",
     "test": "jest --coverage",
     "lint": "eslint src",
     "commit": "git-cz",
@@ -39,13 +40,19 @@
     "commitizen": "^4.1.2",
     "coveralls": "^3.1.0",
     "cross-env": "^7.0.2",
+    "css-loader": "^3.5.3",
     "cz-conventional-changelog": "^3.2.0",
     "eslint": "^7.0.0",
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-plugin-import": "^2.20.2",
+    "html-loader": "^1.1.0",
     "husky": "^4.2.5",
     "jest": "^26.0.1",
+    "sass": "^1.26.5",
+    "sass-loader": "^8.0.2",
     "semantic-release": "^17.0.7",
+    "style-loader": "^1.2.1",
+    "uuid": "^8.0.0",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.11"
   },
@@ -65,5 +72,11 @@
     "commitizen": {
       "path": "cz-conventional-changelog"
     }
+  },
+  "jest": {
+    "testPathIgnorePatterns": [
+      "<rootDir>/src/simulator",
+      "<rootDir>/src/simulator.js"
+    ]
   }
 }
