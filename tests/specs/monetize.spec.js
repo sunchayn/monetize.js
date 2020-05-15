@@ -1,10 +1,21 @@
-const Promise = require('promise-polyfill');
-const monetize = require('../../src/index.js');
+import monetize from '../../src';
+
+// const Promise = require('promise-polyfill');
 const MonetizationFake = require('../fake/monetization');
+
+// Helper delay execution
+const wait = (time) => new Promise((resolve) => setTimeout(resolve, time));
 
 beforeEach(() => {
   document.monetization = new MonetizationFake();
   monetize.refresh();
+});
+
+afterEach(() => {
+  const metaTag = document.querySelector('meta[name="monetization"]');
+  if (metaTag) {
+    metaTag.remove();
+  }
 });
 
 describe('Core API', () => {
@@ -21,12 +32,30 @@ describe('Core API', () => {
   });
 
   test('it resolve the promise when event is fired.', () => {
-    expect.assertions(2);
-    document.monetization.fireAfter('monetizationstart', 100);
+    document.monetization.fireAfter('monetizationstart', 5);
 
-    return monetize.pointer('$wallet').then((watcher) => {
+    monetize.pointer('$wallet').then((watcher) => {
       expect(watcher).toBeDefined();
       expect(watcher.event).toBeTruthy();
+    });
+
+    return wait(10).then(() => {
+      expect.assertions(2);
+    });
+  });
+
+  test('it detect pointer from the meta tag.', () => {
+    const pointer = '$test';
+    monetize.setupMetaTag(pointer);
+
+    document.monetization.fireAfter('monetizationstart', 5);
+
+    monetize.pointer().then(() => {
+      expect(monetize.activePointer).toEqual(pointer);
+    });
+
+    return wait(10).then(() => {
+      expect.assertions(1);
     });
   });
 
@@ -34,13 +63,19 @@ describe('Core API', () => {
     document.monetization = null;
     monetize.refresh();
 
-    expect.assertions(1);
-    return monetize.pointer('$wallet 2').catch((e) => expect(e.message).toMatch('Web monetization is not enabled in this browser.'));
+    monetize.pointer('$wallet 2').catch((e) => expect(e.message).toMatch('Web monetization is not enabled in this browser.'));
+
+    return wait(10).then(() => {
+      expect.assertions(1);
+    });
   });
 
   test('it throw error when setup while wallet is not passed.', () => {
-    expect.assertions(1);
-    return monetize.pointer().catch((e) => expect(e.message).toMatch('You have to provide a wallet.'));
+    monetize.pointer().catch((e) => expect(e.message).toMatch('You have to provide a wallet.'));
+
+    return wait(10).then(() => {
+      expect.assertions(1);
+    });
   });
 
   test('it add proper meta tag', () => {
@@ -55,8 +90,7 @@ describe('Core API', () => {
   });
 
   test('it randomly cycle through multiple pointers', () => {
-    expect.assertions(1);
-    document.monetization.fireAfter('monetizationstart', 100);
+    document.monetization.fireAfter('monetizationstart', 5);
 
     const pointers = [
       '$wallet',
@@ -64,9 +98,8 @@ describe('Core API', () => {
       '$wallet3',
     ];
 
-    return monetize.pointers(pointers, 1).then(() => {
-      const checked = [];
-
+    const checked = [];
+    monetize.pointers(pointers, 1).then(() => {
       const timer = setInterval(() => {
         if (!checked.includes(monetize.activePointer)) {
           checked.push(monetize.activePointer);
@@ -76,16 +109,16 @@ describe('Core API', () => {
           clearInterval(timer);
         }
       }, 1);
+    });
 
-      return (new Promise((res) => setTimeout(() => {
-        res();
-      }, 50))).then(() => expect(checked.length).toEqual(pointers.length));
+    return wait(50).then(() => {
+      expect(checked.length).toEqual(pointers.length);
     });
   });
 
   test('it can use custom callback cycle through multiple pointers', () => {
     expect.assertions(1);
-    document.monetization.fireAfter('monetizationstart', 100);
+    document.monetization.fireAfter('monetizationstart', 5);
 
     const pointers = [
       '$wallet',
@@ -94,26 +127,26 @@ describe('Core API', () => {
     ];
 
     const indexToUse = 2;
+    let onlyOneItemIsReturned = false;
 
-    return monetize.pointers(pointers, 1, (elements) => elements[indexToUse])
+    monetize.pointers(pointers, 1, (elements) => elements[indexToUse])
       .then(() => {
-        let onlyOneItemIsReturned = true;
-
+        onlyOneItemIsReturned = true;
         const timer = setInterval(() => {
           if (monetize.activePointer !== pointers[indexToUse]) {
             onlyOneItemIsReturned = false;
             clearInterval(timer);
           }
         }, 1);
-
-        return (new Promise((res) => setTimeout(() => {
-          res();
-        }, 50))).then(() => expect(onlyOneItemIsReturned).toBeTruthy());
       });
+
+    return wait(50).then(() => {
+      expect(onlyOneItemIsReturned).toBeTruthy();
+    });
   });
 
   test('it can randomly pick a pointer from list', () => {
-    document.monetization.fireAfter('monetizationstart', 100);
+    document.monetization.fireAfter('monetizationstart', 5);
 
     const pointers = [
       '$wallet',
@@ -121,13 +154,16 @@ describe('Core API', () => {
       '$wallet3',
     ];
 
-    return monetize.pointerPerTime(pointers).then(() => {
+    monetize.pointerPerTime(pointers).then(() => {
+    });
+
+    return wait(50).then(() => {
       expect(pointers).toContain(monetize.activePointer);
     });
   });
 
   test('it can randomly pick a pointer from list by its probability', () => {
-    document.monetization.fireAfter('monetizationstart', 100);
+    document.monetization.fireAfter('monetizationstart', 5);
 
     const pointers = {
       '$alice.example': 0.7,
@@ -149,7 +185,7 @@ describe('Core API', () => {
 
     monetize.pointerPerTime(pointers)
       .then(() => {
-        expect(pointers).toContain(monetize.activePointer);
+        expect(pointers.hasOwnProperty(monetize.activePointer)).toBeTruthy();
       });
 
     setInterval(() => {
@@ -160,9 +196,7 @@ describe('Core API', () => {
       }
     }, 1);
 
-    return (new Promise((res) => setTimeout(() => {
-      res();
-    }, 50))).then(() => {
+    return wait(50).then(() => {
       let lastFrequency = -1;
       let acceptableFrequencyOrder = true;
 

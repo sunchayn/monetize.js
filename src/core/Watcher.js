@@ -1,5 +1,5 @@
-const Promise = require('promise-polyfill');
-
+// const Promise = require('promise-polyfill').default;
+import PromiseLoop from '../helpers/PromiseLoop';
 /**
  * Map user friendly event to the Specifications events.
  * @type {{stop: string, pending: string, progress: string}}
@@ -48,13 +48,14 @@ class Watcher {
   /**
    * Listen to the given event and serve the callback via a Promise.
    * @param {string} event
-   * @returns {Promise}
+   * @returns {PromiseLoop}
    */
   // eslint-disable-next-line class-methods-use-this
   when(event) {
-    return new Promise((resolve, reject) => {
+    return new PromiseLoop((resolve, reject) => {
       if (!eventMapping[event]) {
         reject(new Error(`Event '${event}' is not supported.`));
+        return true;
       }
 
       document.monetization.addEventListener(eventMapping[event], (evt) => {
@@ -64,4 +65,4 @@ class Watcher {
   }
 }
 
-module.exports = Watcher;
+export default Watcher;

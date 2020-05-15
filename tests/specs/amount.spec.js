@@ -1,5 +1,9 @@
-const monetize = require('../../src/index.js');
+import monetize from '../../src';
+
 const MonetizationFake = require('../fake/monetization');
+
+// Helper delay execution
+const wait = (time) => new Promise((resolve) => setTimeout(resolve, time));
 
 beforeEach(() => {
   document.monetization = new MonetizationFake();
@@ -8,13 +12,12 @@ beforeEach(() => {
 
 describe('Amount API', () => {
   test('it properly calculate the total for a given pointer', () => {
-    expect.assertions(7);
     const pointer = '$wallet';
     const pointer2 = '$wallet2';
 
-    document.monetization.fireAfter('monetizationstart', 100);
+    document.monetization.fireAfter('monetizationstart', 5);
 
-    return monetize.pointer(pointer).then(() => {
+    monetize.pointer(pointer).then(() => {
       const detail = {
         amount: 22,
         assetCode: 'XRP',
@@ -41,6 +44,10 @@ describe('Amount API', () => {
       // The total is properly summed.
       expect(monetize.amount.total()).toEqual(detail.amount * 3);
     });
+
+    return wait(10).then(() => {
+      expect.assertions(7);
+    });
   });
 
   test('it return null when pointer is not found', () => {
@@ -50,9 +57,9 @@ describe('Amount API', () => {
   test('it format amount properly', () => {
     const pointer = '$wallet';
 
-    document.monetization.fireAfter('monetizationstart', 100);
+    document.monetization.fireAfter('monetizationstart', 5);
 
-    return monetize.pointer(pointer).then(() => {
+    monetize.pointer(pointer).then(() => {
       const detail = {
         amount: 22,
         assetCode: 'USD',
@@ -69,13 +76,17 @@ describe('Amount API', () => {
       expect(monetize.amount.getPointerTotal(pointer, true)).toEqual(expectedAmount);
       expect(monetize.amount.total(true).toString()).toEqual(expectedAmount);
     });
+
+    return wait(10).then(() => {
+      expect.assertions(2);
+    });
   });
 
   test('total amount with one currency is properly calculated', () => {
     const pointer = '$wallet';
-    document.monetization.fireAfter('monetizationstart', 100);
+    document.monetization.fireAfter('monetizationstart', 5);
 
-    return monetize.pointer(pointer).then(() => {
+    monetize.pointer(pointer).then(() => {
       const detail = {
         amount: 22,
         assetCode: 'USD',
@@ -88,15 +99,19 @@ describe('Amount API', () => {
 
       expect(monetize.amount.total()).toEqual(detail.amount * 2);
     });
+
+    return wait(10).then(() => {
+      expect.assertions(1);
+    });
   });
 
   test('total amount with multiple currency is properly calculated', () => {
     const pointer = '$wallet';
     const pointer2 = '$wallet2';
 
-    document.monetization.fireAfter('monetizationstart', 100);
+    document.monetization.fireAfter('monetizationstart', 5);
 
-    return monetize.pointer(pointer).then(() => {
+    monetize.pointer(pointer).then(() => {
       const detail = {
         amount: 22,
         assetCode: 'USD',
@@ -120,6 +135,10 @@ describe('Amount API', () => {
 
       expect(total.USD).toEqual(detail.amount * 2);
       expect(total.XRP).toEqual(detail2.amount);
+    });
+
+    return wait(10).then(() => {
+      expect.assertions(2);
     });
   });
 });

@@ -102,4 +102,4 @@ class Amount {
   }
 }
 
-module.exports = Amount;
+export default Amount;

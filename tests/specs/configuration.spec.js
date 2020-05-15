@@ -1,6 +1,11 @@
-const monetize = require('../../src/index.js');
+import Monetize from '../../src/core/Monetize';
+
+import monetize from '../../src';
+
 const MonetizationFake = require('../fake/monetization');
-const Monetize = require('../../src/core/Monetize');
+
+// Helper delay execution
+const wait = (time) => new Promise((resolve) => setTimeout(resolve, time));
 
 beforeEach(() => {
   document.monetization = new MonetizationFake();
@@ -10,7 +15,7 @@ beforeEach(() => {
 describe('Configuration', () => {
   test('it update API configuration', () => {
     const config = {
-      addEnabledClass: true,
+      addClasses: true,
     };
 
     const configured = monetize.configure(config);
@@ -21,15 +26,17 @@ describe('Configuration', () => {
 
   test('it add css classes to body when enabled', () => {
     const config = {
-      addEnabledClass: true,
+      addClasses: true,
       classes: {
         enabled: 'js-enabled-override',
       },
     };
 
-    document.monetization.fireAfter('monetizationstart', 200);
+    monetize.configure(config).refresh();
 
-    return monetize.configure(config)
+    document.monetization.fireAfter('monetizationstart', 5);
+
+    monetize
       .pointer('$wallet')
       .then(() => {
         expect(document.body.classList.contains(monetize.config.classes.enabled)).toBeTruthy();
@@ -47,25 +54,45 @@ describe('Configuration', () => {
         expect(document.body.classList.contains(monetize.config.classes.stopped)).toBeTruthy();
         expect(document.body.classList.contains(monetize.config.classes.sending)).toBeFalsy();
       });
+
+    return wait(10).then(() => {
+      expect.assertions(10);
+    });
+  });
+
+  test('it add css class to body when disabled', () => {
+    const config = {
+      addClasses: true,
+    };
+
+    document.monetization = null;
+
+    monetize.configure(config).refresh();
+    expect(document.body.classList.contains(monetize.config.classes.disabled)).toBeTruthy();
   });
 
   test('it does not add css classes to body when disabled', () => {
-    document.body.className = "";
+    document.body.className = '';
     const config = {
-      addEnabledClass: false,
+      addClasses: false,
     };
 
-    document.monetization.fireAfter('monetizationstart', 200);
+    document.monetization.fireAfter('monetizationstart', 5);
 
-    return monetize.configure(config)
+    monetize.configure(config)
       .pointer('$wallet')
       .then(() => {
         document.monetization.fire('monetizationpending');
         document.monetization.fire('monetizationstop');
+        expect(document.body.classList.contains(monetize.config.classes.disabled)).toBeFalsy();
         expect(document.body.classList.contains(monetize.config.classes.enabled)).toBeFalsy();
         expect(document.body.classList.contains(monetize.config.classes.pending)).toBeFalsy();
         expect(document.body.classList.contains(monetize.config.classes.stopped)).toBeFalsy();
         expect(document.body.classList.contains(monetize.config.classes.sending)).toBeFalsy();
       });
+
+    return wait(10).then(() => {
+      expect.assertions(5);
+    });
   });
 });

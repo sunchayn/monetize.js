@@ -1,8 +1,9 @@
+import Watcher from './Watcher';
+import Amount from './Amount';
+import PromiseLoop from '../helpers/PromiseLoop';
+
 const merge = require('lodash.merge');
 const sample = require('lodash.sample');
-const Promise = require('promise-polyfill');
-const Watcher = require('./Watcher');
-const Amount = require('./Amount');
 
 /**
  * Create a new instance of Monetize.js
@@ -13,8 +14,9 @@ class Monetize {
    */
   constructor() {
     this.default = {
-      addEnabledClass: false,
+      addClasses: false,
       classes: {
+        disabled: 'js-monetization-disabled',
         enabled: 'js-monetization-enabled',
         pending: 'js-monetization-pending',
         stopped: 'js-monetization-stopped',
@@ -41,7 +43,16 @@ class Monetize {
 
     if (!document.monetization) {
       this.enabled = false;
+
+      if (this.config.addClasses) {
+        document.body.classList.add(this.config.classes.disabled);
+      }
+
       return;
+    }
+
+    if (this.config.addClasses) {
+      document.body.classList.add(this.config.classes.enabled);
     }
 
     this.enabled = true;
@@ -61,28 +72,33 @@ class Monetize {
    * if the Monetization API is enable it will  Add a new wallet pointer to the page
    * then register the required events for the monetization.
    * @param {null|string} pointer
-   * @returns {Promise}
+   * @returns {PromiseLoop}
    */
-  pointer(pointer) {
-    return new Promise((resolve, reject) => {
+  pointer(pointer = null) {
+    return new PromiseLoop((resolve, reject) => {
       if (!this.isEnabled()) {
         reject(new Error('Web monetization is not enabled in this browser.'));
+        return true;
       }
 
-      if (this.config.addEnabledClass) {
-        document.body.classList.add(this.config.classes.enabled);
+      if (this.config.addClasses) {
         this.registerCssClasses();
       }
 
-      if (!pointer) {
+      const candidatePointer = pointer || this.detectPointerFromMetaTag();
+
+      if (!candidatePointer) {
         reject(new Error('You have to provide a wallet.'));
+        return true;
       }
 
-      this.setupMetaTag(pointer);
+      this.setupMetaTag(candidatePointer);
 
       document.monetization.addEventListener('monetizationstart', (event) => {
         resolve(this.watcher.initializedWith(event, this.amount));
       });
+
+      return true;
     });
   }
 
@@ -92,13 +108,13 @@ class Monetize {
    * @param {number} timeout how often the pointer should be changed.
    * @param {function} callback an optional callback to control how a pointer is chosen.
    * It must return a pointer otherwise it will be ignored.
-   * @returns {Promise}
+   * @returns {PromiseLoop}
    */
   pointers(pointers, timeout = 3000, callback) {
-    setInterval(() => {
+    this._timer = setInterval(() => {
       let pointer;
 
-      if (callback) {
+      if (typeof callback === 'function') {
         pointer = callback(pointers);
       }
 
@@ -155,6 +171,15 @@ class Monetize {
   }
 
   /**
+   * Detect if there's a pointer in the page.
+   * @returns {string | null}
+   */
+  detectPointerFromMetaTag() {
+    const currentTag = document.querySelector('meta[name="monetization"]');
+    return (currentTag && currentTag.getAttribute('content')) || null;
+  }
+
+  /**
    * Create a meta tag with the provided pointer.
    * @param {string} pointer A pointer to add.
    */
@@ -208,6 +233,7 @@ class Monetize {
    */
   refresh() {
     this.init();
+    clearInterval(this._timer);
     return this;
   }
 
@@ -244,4 +270,4 @@ class Monetize {
   }
 }
 
-module.exports = Monetize;
+export default Monetize;

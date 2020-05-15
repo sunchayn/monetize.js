@@ -1,4 +1,5 @@
-const monetize = require('../../src/index.js');
+import monetize from '../../src';
+
 const MonetizationFake = require('../fake/monetization');
 
 beforeEach(() => {

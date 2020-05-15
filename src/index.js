@@ -1,3 +1,5 @@
-const Monetize = require('./core/Monetize');
+import Monetize from './core/Monetize';
 
-module.exports = new Monetize();
+const monetize = new Monetize();
+
+export default monetize;
