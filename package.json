@@ -11,7 +11,8 @@
     "url": "https://github.com/sunchayn/monetize.js/issues"
   },
   "files": [
-    "dist",
+    "dist/monetize.js",
+    "dist/simulator.js",
     "package.json"
   ],
   "scripts": {

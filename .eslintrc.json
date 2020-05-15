@@ -10,5 +10,8 @@
     "no-underscore-dangle": "off",
     "consistent-return": "off",
     "no-prototype-builtins": "off"
+  },
+  "globals": {
+    "monetize": true
   }
 }
