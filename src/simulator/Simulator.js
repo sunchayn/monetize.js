@@ -171,7 +171,7 @@ export default class Simulator {
       const pointer = monetize.detectPointerFromMetaTag();
 
       if (!pointer) {
-        this._fireStoppedEvent();
+        this._simulationDisallowed();
       }
 
       this._determinePanelStatus();
@@ -189,7 +189,6 @@ export default class Simulator {
   }
 
   _fireStoppedEvent() {
-    // todo: Verify it stops when served over http
     const stopped = 'monetizationstop';
     document.monetization.state = 'stopped';
     // eslint-disable-next-line max-len
