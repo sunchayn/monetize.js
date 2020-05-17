@@ -1,8 +1,9 @@
 ### Monetize.js
 
+![Version](https://img.shields.io/npm/v/monetize/latest)
 [![Release](https://github.com/sunchayn/monetize.js/workflows/Release/badge.svg)](https://github.com/sunchayn/monetize.js/actions)
 [![Coverage](https://coveralls.io/repos/github/sunchayn/monetize.js/badge.svg?branch=master)](https://coveralls.io/github/sunchayn/monetize.js?branch=master)
-![npm bundle size](https://img.shields.io/bundlephobia/min/monetize.js)
+![npm bundle size](https://img.shields.io/bundlephobia/min/monetize)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](./LICENSE)
 
 Monetize.js is an Event-driven library that serves as a wrapper and simulator for Web Monetization API.
