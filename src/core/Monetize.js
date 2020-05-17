@@ -52,11 +52,9 @@ class Monetize {
 
   observeHead() {
     (new MutationObserver(() => {
+      // todo: add test for this observer
       const pointer = this.detectPointerFromMetaTag();
-
-      if (pointer) {
-        this.activePointer = pointer;
-      }
+      this.activePointer = pointer || null;
     })).observe(document.head, { childList: true });
   }
 
