@@ -1,4 +1,4 @@
-// const Promise = require('promise-polyfill').default;
+// const Promise = require('promise-polyfill')._default;
 import PromiseLoop from '../helpers/PromiseLoop';
 /**
  * Map user friendly event to the Specifications events.

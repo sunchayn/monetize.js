@@ -35,7 +35,7 @@ describe('Amount API', () => {
       expect(monetize.amount.getPointerTotal(pointer)).toEqual(detail.amount * 2);
 
       // Amount updated for another pointer
-      monetize.update(pointer2);
+      monetize.set(pointer2);
 
       document.monetization.fire('monetizationprogress', { detail });
       expect(monetize.amount.getPointerTotal(pointer)).toEqual(detail.amount * 2);
@@ -128,7 +128,7 @@ describe('Amount API', () => {
       document.monetization.fire('monetizationprogress', { detail });
       document.monetization.fire('monetizationprogress', { detail });
 
-      monetize.update(pointer2);
+      monetize.set(pointer2);
       document.monetization.fire('monetizationprogress', { detail: detail2 });
 
       const total = monetize.amount.total();

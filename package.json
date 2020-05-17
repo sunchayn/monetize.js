@@ -49,6 +49,7 @@
     "html-loader": "^1.1.0",
     "husky": "^4.2.5",
     "jest": "^26.0.1",
+    "mutationobserver-shim": "^0.3.5",
     "sass": "^1.26.5",
     "sass-loader": "^8.0.2",
     "semantic-release": "^17.0.7",
@@ -58,8 +59,7 @@
     "webpack-cli": "^3.3.11"
   },
   "dependencies": {
-    "lodash.merge": "^4.6.2",
-    "lodash.sample": "^4.2.1"
+    "lodash.merge": "^4.6.2"
   },
   "publishConfig": {
     "access": "public"

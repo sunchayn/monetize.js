@@ -2,9 +2,6 @@ import monetize from '../../src/monetize';
 
 const MonetizationFake = require('../fake/monetization');
 
-// Helper delay execution
-const wait = (time) => new Promise((resolve) => setTimeout(resolve, time));
-
 beforeEach(() => {
   document.monetization = new MonetizationFake();
   monetize.refresh();

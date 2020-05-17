@@ -3,7 +3,6 @@ import Amount from './Amount';
 import PromiseLoop from '../helpers/PromiseLoop';
 
 const merge = require('lodash.merge');
-const sample = require('lodash.sample');
 
 /**
  * Create a new instance of Monetize.js
@@ -13,7 +12,17 @@ class Monetize {
    * Initialize the class.
    */
   constructor() {
-    this.default = {
+    /**
+     * Default settings.
+     *
+     * @type {{
+     *  classes: {
+     *    stopped: string, pending: string, sending: string, disabled: string, enabled: string
+     *  },
+     *  addClasses: boolean
+     * }}
+     */
+    this._default = {
       addClasses: false,
       classes: {
         disabled: 'js-monetization-disabled',
@@ -24,23 +33,28 @@ class Monetize {
       },
     };
 
+    /**
+     * Main configuration.
+     */
+    this.config = this._default;
+
     // Monetization meta tag holder.
     this.tag = null;
 
     this.activePointer = null;
 
     this.init();
-    this.observeHead();
+    this._observeHead();
   }
 
   /**
-   * Setup default values and verify support for Monetization API.
+   * Setup _default values and verify support for Monetization API.
    */
   init() {
     this.watcher = new Watcher();
     this.amount = new Amount();
 
-    this.config = merge(this.default, this.config);
+    this.config = merge(this._default, this.config);
 
     if (!document.monetization) {
       this.enabled = false;
@@ -50,9 +64,12 @@ class Monetize {
     this.enabled = true;
   }
 
-  observeHead() {
+  /**
+   * Watch head tag for changes to update thr active pointer.
+   * @private
+   */
+  _observeHead() {
     (new MutationObserver(() => {
-      // todo: add test for this observer
       const pointer = this.detectPointerFromMetaTag();
       this.activePointer = pointer || null;
     })).observe(document.head, { childList: true });
@@ -63,24 +80,14 @@ class Monetize {
    * @param {object} options
    * @returns {Monetize}
    */
-  configure(options) {
-    this.config = merge(this.default, options);
+  setup(options) {
+    this.config = merge(this._default, options);
 
     if (this.config.addClasses) {
       this._addServiceStatusClass();
     }
 
     return this;
-  }
-
-  _addServiceStatusClass() {
-    if (this.isEnabled()) {
-      document.body.classList.remove(this.config.classes.disabled);
-      document.body.classList.add(this.config.classes.enabled);
-    } else {
-      document.body.classList.remove(this.config.classes.enabled);
-      document.body.classList.add(this.config.classes.disabled);
-    }
   }
 
   /**
@@ -97,11 +104,11 @@ class Monetize {
       }
 
       if (this.config.addClasses) {
-        this.registerCssClasses();
+        this._registerCssClasses();
       }
 
       if (pointer) {
-        this.setupMetaTag(pointer);
+        this._setupMetaTag(pointer);
       } else if (!this.detectPointerFromMetaTag()) {
         reject(new Error('You have to provide a wallet.'));
         return true;
@@ -116,14 +123,19 @@ class Monetize {
   }
 
   /**
-   * Randomly cycle through the given pointer.
-   * @param {string[]} pointers list of pointers to pick from.
+   * Sequentially cycle through the given pointers.
+   * @param {string[]} pointers list to pick from.
    * @param {number} timeout how often the pointer should be changed.
    * @param {function} callback an optional callback to control how a pointer is chosen.
    * It must return a pointer otherwise it will be ignored.
    * @returns {PromiseLoop}
    */
-  pointers(pointers, timeout = 3000, callback) {
+  cycle(pointers, timeout = 3000, callback) {
+    // Remove old intervals.
+    clearInterval(this._timer);
+
+    let lastIndex = 0;
+
     this._timer = setInterval(() => {
       let pointer;
 
@@ -132,35 +144,54 @@ class Monetize {
       }
 
       if (!pointer) {
-        pointer = sample(pointers);
+        pointer = pointers[lastIndex];
+        lastIndex = lastIndex <= pointers.length - 1 ? lastIndex + 1 : 0;
       }
 
-      this.update(pointer);
+      this.set(pointer);
     }, timeout);
 
-    return this.pointer(sample(pointers));
+    return this.pointer(pointers[0]);
+  }
+
+  /**
+   * Randomly select a pointer from the list.
+   * @param {Object.<string, number>} pointers
+   * @param {number} timeout how often the pointer should be changed.
+   * @returns {PromiseLoop}
+   */
+  probabilisticCycle(pointers, timeout = 3000) {
+    // Remove old intervals.
+    clearInterval(this._timer);
+
+    this._timer = setInterval(() => {
+      this.set(this._getLuckyPointer(pointers));
+    }, timeout);
+
+    return this.pointer(this._getLuckyPointer(pointers));
   }
 
   /**
    * Randomly select a pointer from the list.
    * @param {string[] | Object.<string, number>} pointers
+   * @returns {PromiseLoop}
    */
-  pointerPerTime(pointers) {
+  pluck(pointers) {
     if (Array.isArray(pointers)) {
-      return this.pointer(sample(pointers));
+      const index = this._randomNumber(0, pointers.length - 1);
+      return this.pointer(pointers[index]);
     }
 
-    return this.pointer(this.pickByProbability(pointers));
+    return this.pointer(this._getLuckyPointer(pointers));
   }
 
   // eslint-disable-next-line class-methods-use-this
-  pickByProbability(pointers) {
+  _getLuckyPointer(pointers) {
     const sum = Object.values(pointers).reduce((acc, weight) => acc + weight, 0);
     let choice = Math.random() * sum;
 
     // eslint-disable-next-line no-restricted-syntax
     for (const pointer in pointers) {
-      // eslint-disable-next-line no-prototype-builtins
       if (pointers.hasOwnProperty(pointer)) {
         const weight = pointers[pointer];
         choice -= weight;
@@ -174,12 +205,12 @@ class Monetize {
   }
 
   /**
-   * Change the currently active pointer.
+   * Update the meta tag with the given pointer.
    * @param {string} pointer a new pointer to use.
    * @returns {Monetize}
    */
-  update(pointer) {
-    this.setupMetaTag(pointer);
+  set(pointer) {
+    this._setupMetaTag(pointer);
     return this;
   }
 
@@ -195,10 +226,9 @@ class Monetize {
   /**
    * Create a meta tag with the provided pointer.
    * @param {string} pointer A pointer to add.
+   * @private
    */
-  setupMetaTag(pointer) {
-    this.activePointer = pointer;
-
+  _setupMetaTag(pointer) {
     const currentTag = document.querySelector('meta[name="monetization"]');
 
     if (currentTag) {
@@ -215,8 +245,9 @@ class Monetize {
 
   /**
    * Add a CSS class for Monetization State to Body tag.
+   * @private
    */
-  registerCssClasses() {
+  _registerCssClasses() {
     const showProgressClasses = () => {
       document.body.classList.remove(this.config.classes.stopped);
       document.body.classList.remove(this.config.classes.pending);
@@ -238,6 +269,31 @@ class Monetize {
       document.body.classList.remove(this.config.classes.sending);
       document.body.classList.add(this.config.classes.stopped);
     });
+  }
+
+  /**
+   * Add a class that indicate whether the Web monetization API is supported.
+   * @private
+   */
+  _addServiceStatusClass() {
+    if (this.isEnabled()) {
+      document.body.classList.remove(this.config.classes.disabled);
+      document.body.classList.add(this.config.classes.enabled);
+    } else {
+      document.body.classList.remove(this.config.classes.enabled);
+      document.body.classList.add(this.config.classes.disabled);
+    }
+  }
+
+  /**
+   * Get a random number withing range.
+   * @param min
+   * @param max
+   * @returns {number}
+   * @private
+   */
+  _randomNumber(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) + min);
   }
 
   /**

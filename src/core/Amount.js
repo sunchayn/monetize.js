@@ -9,7 +9,7 @@ class Amount {
    */
   constructor() {
     /**
-     * Hold the captures pointers.
+     * Hold the captures cycle.
      * @type object
      */
     this.pointers = {};

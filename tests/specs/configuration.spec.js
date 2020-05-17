@@ -13,12 +13,12 @@ beforeEach(() => {
 });
 
 describe('Configuration', () => {
-  test('it update API configuration', () => {
+  test('it set API configuration', () => {
     const config = {
       addClasses: true,
     };
 
-    const configured = monetize.configure(config);
+    const configured = monetize.setup(config);
 
     expect(configured).toBeInstanceOf(Monetize);
     expect(monetize.config).toEqual(expect.objectContaining(config));
@@ -32,7 +32,7 @@ describe('Configuration', () => {
       },
     };
 
-    monetize.configure(config).refresh();
+    monetize.setup(config).refresh();
 
     document.monetization.fireAfter('monetizationstart', 5);
 
@@ -67,7 +67,7 @@ describe('Configuration', () => {
 
     document.monetization = null;
     monetize.refresh();
-    monetize.configure(config);
+    monetize.setup(config);
 
     expect(document.body.classList.contains(monetize.config.classes.disabled)).toBeTruthy();
   });
@@ -80,7 +80,7 @@ describe('Configuration', () => {
 
     document.monetization.fireAfter('monetizationstart', 5);
 
-    monetize.configure(config)
+    monetize.setup(config)
       .pointer('$wallet')
       .then(() => {
         document.monetization.fire('monetizationpending');
