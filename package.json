@@ -22,8 +22,7 @@
     "test": "jest --coverage",
     "lint": "eslint src",
     "commit": "git-cz",
-    "semantic-release": "semantic-release",
-    "report-coverage": "coveralls < coverage/lcov.info"
+    "semantic-release": "semantic-release"
   },
   "keywords": [
     "monetization",
