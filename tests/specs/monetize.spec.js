@@ -161,8 +161,6 @@ describe('Core API', () => {
   });
 
   test('it can randomly pick a pointer from list by its probability.', () => {
-    document.monetization.fireAfter('monetizationstart', 5);
-
     const pointers = {
       '$alice.example': 0.6,
       '$bob.example': 0.05,
@@ -181,19 +179,15 @@ describe('Core API', () => {
       '$bob.example',
     ];
 
-    const timer = setInterval(() => {
+    // eslint-disable-next-line no-plusplus
+    for (let i = 0; i < 100; i++) {
       const item = monetize._getLuckyPointer(pointers);
-
-      // eslint-disable-next-line no-prototype-builtins
       if (picked.hasOwnProperty(item)) {
         picked[item] += 1;
       }
-    }, 1);
-
+    }
 
     return wait(40).then(() => {
-      clearInterval(timer);
-
       let lastFrequency = null;
       let acceptableFrequencyOrder = true;
 
