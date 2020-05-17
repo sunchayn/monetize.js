@@ -172,6 +172,7 @@ export default class Simulator {
 
       if (!pointer) {
         this._simulationDisallowed();
+        this._fireStoppedEvent();
       }
 
       this._determinePanelStatus();
