@@ -1,11 +1,11 @@
-name: Release
+name: Pull requests
 
 on:
-  push:
-    branches:
-      - master
+  pull_request:
+    branches: [ master ]
+
 jobs:
-  publish:
+  tests:
     runs-on: ubuntu-18.04
     steps:
       - name: Checkout
@@ -26,9 +26,3 @@ jobs:
         uses: coverallsapp/github-action@master
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Publish to NPM
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npx semantic-release
