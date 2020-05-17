@@ -212,9 +212,9 @@ describe('Core API', () => {
 
   test('it can randomly cycle through pointers by their probability.', () => {
     const pointers = {
-      '$alice.example': 0.75,
+      '$alice.example': 0.65,
       '$bob.example': 0.05,
-      '$connie.example': 0.20,
+      '$connie.example': 0.30,
     };
 
     const picked = {
@@ -240,7 +240,7 @@ describe('Core API', () => {
     }, 1);
 
     expect.assertions(1);
-    return wait(25).then(() => {
+    return wait(40).then(() => {
       clearInterval(timer);
 
       let lastFrequency = null;
