@@ -35,7 +35,7 @@ Using unpkg CDN:
 ```
 
 ## Examples
-Multiple examples has been created using monetize.js you can find them in this [demo](https://github.com/sunchayn/monetize.js/tree/master/demo) folder.
+Multiple examples has been created using monetize.js you can find them in this [examples](https://github.com/sunchayn/monetize.js/tree/master/examples) folder.
 
 ## Monetize.js API
 
@@ -355,9 +355,7 @@ If installed using npm
 
 ```javascript
 const monetize = require('monetize');
-
-// todo: Verifiy simulator path for npm
-const simulator = require('monetize');
+const simulator = require('monetize/dist/simulator');
 ```
 
 Or using a CDN
