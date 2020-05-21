@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Static pointer — Monetize.js</title>
+  <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+
+  <!--  Static pointer-->
+  <meta name="monetization" content="$static.pointer/monetize">
+</head>
+
+<body class="h-screen border-8 border-gray-200 flex items-center justify-center">
+  <div class="p-8 max-h-full" style="width: 360px;">
+    <h1>Monetization state: <span id="js-state">n/a</span></h1>
+    <p class="text-sm">Detected pointer: <span id="js-pointer">n/a</span></p>
+    <p class="text-sm">Current amount: <span id="js-amount">n/a</span></p>
+  </div>
+
+  <script src="https://unpkg.com/monetize@latest/dist/monetize.js"></script>
+  <script src="https://unpkg.com/monetize@latest/dist/simulator.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

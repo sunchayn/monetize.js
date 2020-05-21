@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Loading bonus content — Monetize.js</title>
+  <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body>
+<div class="h-screen border-8 border-gray-200 p-8 overflow-y-auto">
+  <div class="container max-w-4xl mx-auto">
+    <h1 class="text-xl font-bold">Monetize.js blog</h1>
+    <h2 class="mb-6">Bonus content</h2>
+
+    <div class="p-4 mb-4 bg-red-100 border border-red-300" id="js-notice">
+      <h1 class="font-bold">Monetize this page to unlock bonus content.</h1>
+    </div>
+
+    <div class="bonus-content" id="js-bonus-content">
+      <div class="loader hidden" id="js-loader">
+        Loading bonus content...
+      </div>
+
+      <div class="hidden" id="js-host">
+
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+
+<script src="https://unpkg.com/monetize@latest/dist/monetize.js"></script>
+<script src="https://unpkg.com/monetize@latest/dist/simulator.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="app.js"></script>
+</html>

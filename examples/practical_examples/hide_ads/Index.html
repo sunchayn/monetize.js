@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hiding ads — Monetize.js</title>
+  <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+
+  <style>
+    .js-monetization-sending .ads-hidden-with-css {
+      display: none;
+    }
+
+    .js-ad.is-hidden {
+      display: none;
+    }
+  </style>
+</head>
+
+<body class="h-screen border-8 border-gray-200 overflow-y-auto">
+  <div class="p-8">
+    <div class="container max-w-4xl mx-auto">
+      <h1 class="text-xl font-bold mb-6">Monetize.js blog</h1>
+      <p class="mb-4">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid aspernatur aut, debitis eaque excepturi impedit, laborum nam neque nisi perferendis possimus provident quaerat quam quis ratione sapiente sit suscipit, vel!</p>
+
+      <div class="p-4 mb-4 bg-red-100 border border-red-300 ads-hidden-with-css">
+        <small>Ads</small>
+        <h1 class="font-bold">This ad will be hidden using status css classes</h1>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est, ipsum modi odio quod repudiandae totam?</p>
+      </div>
+
+      <p class="mb-4">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid doloribus optio sapiente sit veniam? Adipisci aliquid dignissimos dolores dolorum eligendi, facere illo ipsa officia ratione recusandae sequi sit temporibus totam?</p>
+
+      <p class="mb-4">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid doloribus optio sapiente sit veniam? Adipisci aliquid dignissimos dolores dolorum eligendi, facere illo ipsa officia ratione recusandae sequi sit temporibus totam?</p>
+
+
+      <div class="p-4 mb-4 bg-red-100 border border-red-300 js-ad">
+        <small>Ads</small>
+        <h1 class="font-bold">This ad will be hidden using event watcher</h1>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est, ipsum modi odio quod repudiandae totam?</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/monetize@latest/dist/monetize.js"></script>
+  <script src="https://unpkg.com/monetize@latest/dist/simulator.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

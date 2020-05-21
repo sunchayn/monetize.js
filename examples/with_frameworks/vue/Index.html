@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Using it with vue — Monetize.js</title>
+  <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="h-screen border-8 border-gray-200 overflow-y-auto">
+  <div class="p-8">
+    <div class="hidden" id="app">
+      <h1 class="text-lg mb-4">Monetization status is: {{status}}</h1>
+
+      <div v-if="monetized">
+        <h1 class="mb-4 text-lg">Content is monetized.</h1>
+        <small class="uppercase text-sm">Bonus content is here</small>
+        <hr class="y-2">
+        <p class="mb-4">Lorem ipsum dolor sit amet, consectetur adipisicing elit. A alias deleniti dolor hic, ipsam iste libero magni, odit optio quam quis quo quos ratione repellendus, veniam veritatis voluptas voluptatum. Hic.</p>
+        <p class="mb-4">Lorem ipsum dolor sit amet, consectetur adipisicing elit. A alias deleniti dolor hic, ipsam iste libero magni, odit optio quam quis quo quos ratione repellendus, veniam veritatis voluptas voluptatum. Hic.</p>
+      </div>
+
+      <div v-else>
+        <div class="p-4 mb-4 bg-red-100 border border-red-300" id="js-notice">
+          <h1 class="font-bold">Monetize this page to unlock bonus content.</h1>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/monetize@latest/dist/monetize.js"></script>
+  <script src="https://unpkg.com/monetize@latest/dist/simulator.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11/dist/vue.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

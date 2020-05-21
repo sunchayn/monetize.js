@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cycle through — Monetize.js</title>
+  <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="">
+  <div class="pb-64 md:pb-8 p-8 overflow-y-auto h-screen max-w-5xl mx-auto">
+    <div class="p-2 mb-4 rounded-sm bg-teal-100 text-teal-900 border border-teal-200">
+      <h2 class="font-bold">Instruction</h2>
+      <p class="text-sm max-w-4xl">To initialize the test first click on one of the button below the tables to activate an initial pointer in the page then start simulating using the simulator panel.</p>
+    </div>
+
+    <header class="mb-4">
+      <h1 class="mb-0">Monetization state: <span id="js-state">n/a</span></h1>
+      <p class="text-sm">Current pointer: <span id="js-pointer">n/a</span></p>
+    </header>
+
+    <div class="md:flex">
+      <div class="md:w-1/2 mb-5 md:mb-0 md:pr-10">
+        <h2 class="mb-2 text-gray-700 uppercase">Sequential</h2>
+
+        <div class="overflow-x-auto">
+          <table class="w-full mb-4 border border-gray-200 p-0 text-left">
+          <thead class="bg-gray-100">
+            <th class="p-2 font-normal">Pointer</th>
+            <th class="p-2 font-normal text-right">Total</th>
+          </thead>
+
+          <tbody>
+            <tr class="border-b border-gray-200">
+              <td class="p-2">$example.sequential/bob</td>
+              <td class="p-2 text-right" id="js-pointer-1">0</td>
+            </tr>
+
+            <tr class="border-b border-gray-200">
+              <td class="p-2">$example.sequential/alice</td>
+              <td class="p-2 text-right" id="js-pointer-2">0</td>
+            </tr>
+
+            <tr class="border-b border-gray-200">
+              <td class="p-2">$example.sequential/jhon</td>
+              <td class="p-2 text-right" id="js-pointer-3">0</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+
+        <button class="bg-blue-700 text-white p-1 p-2 rounded hover:shadow-outline hover:underline" id="js-activate-sequential">Activate sequential</button>
+      </div>
+
+      <div class="md:w-1/2 md:pl-10">
+        <h2 class="mb-2 text-gray-700 uppercase">Probabilistic</h2>
+
+        <div class="overflow-x-auto">
+          <table class="w-full mb-4 border border-gray-200 p-0 text-left">
+            <thead class="bg-gray-100">
+            <th class="p-2 font-normal">Pointer</th>
+            <th class="p-2 font-normal">Probability</th>
+            <th class="p-2 font-normal text-right">Total</th>
+            </thead>
+
+            <tbody>
+            <tr class="border-b border-gray-200">
+              <td class="p-2">$example.probabilistic/bob</td>
+              <td class="p-2">0.75</td>
+              <td class="p-2 text-right" id="js-pointer-4">0</td>
+            </tr>
+
+            <tr class="border-b border-gray-200">
+              <td class="p-2">$example.probabilistic/alice</td>
+              <td class="p-2">0.2</td>
+              <td class="p-2 text-right" id="js-pointer-5">0</td>
+            </tr>
+
+            <tr class="border-b border-gray-200">
+              <td class="p-2">$example.probabilistic/jhon</td>
+              <td class="p-2">0.05</td>
+              <td class="p-2 text-right" id="js-pointer-6">0</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <button class="bg-blue-700 text-white p-1 p-2 rounded hover:shadow-outline hover:underline" id="js-activate-probabilistic">Activate probabilistic</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/monetize@latest/dist/monetize.js"></script>
+  <script src="https://unpkg.com/monetize@latest/dist/simulator.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
