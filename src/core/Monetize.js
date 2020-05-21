@@ -41,9 +41,8 @@ class Monetize {
     // Monetization meta tag holder.
     this.tag = null;
 
-    // todo: Auto detect pointer from meta tag.
     // todo: Add watcher for pointer changes.
-    this.activePointer = null;
+    this.activePointer = this.detectPointerFromMetaTag();
 
     this.init();
     this._observeHead();
