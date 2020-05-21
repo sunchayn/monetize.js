@@ -2,7 +2,7 @@
 
 ![Version](https://img.shields.io/npm/v/monetize/latest)
 [![Release](https://github.com/sunchayn/monetize.js/workflows/Release/badge.svg)](https://github.com/sunchayn/monetize.js/actions)
-[![Coverage](https://coveralls.io/repos/github/sunchayn/monetize.js/badge.svg?branch=master)](https://coveralls.io/github/sunchayn/monetize.js?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/sunchayn/monetize.js/badge.svg?branch=master&t=yaGAHp)](https://coveralls.io/github/sunchayn/monetize.js?branch=master)
 ![npm bundle size](https://img.shields.io/bundlephobia/min/monetize)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](./LICENSE)
 
@@ -338,6 +338,7 @@ const currency = monetize.amount.getPointerCurrency(pointer);
 If your page is using multiple pointers at the same time you can get the total streamed amount grouped by currency using `total` method:
 
 ```javascript
+
 monetize.cycle(...);
 
 // Raw total
