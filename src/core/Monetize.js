@@ -41,6 +41,8 @@ class Monetize {
     // Monetization meta tag holder.
     this.tag = null;
 
+    // todo: Auto detect pointer from meta tag.
+    // todo: Add watcher for pointer changes.
     this.activePointer = null;
 
     this.init();
@@ -130,7 +132,7 @@ class Monetize {
    * It must return a pointer otherwise it will be ignored.
    * @returns {PromiseLoop}
    */
-  cycle(pointers, timeout = 3000, callback) {
+  cycle(pointers, timeout = 3000, callback = null) {
     // Remove old intervals.
     clearInterval(this._timer);
 
@@ -145,7 +147,7 @@ class Monetize {
 
       if (!pointer) {
         pointer = pointers[lastIndex];
-        lastIndex = lastIndex <= pointers.length - 1 ? lastIndex + 1 : 0;
+        lastIndex = lastIndex + 1 <= pointers.length - 1 ? lastIndex + 1 : 0;
       }
 
       this.set(pointer);
