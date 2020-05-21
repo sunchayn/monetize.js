@@ -2,6 +2,9 @@ import monetize from '../../src/monetize';
 
 const MonetizationFake = require('../fake/monetization');
 
+// Helper delay execution
+const wait = (time) => new Promise((resolve) => setTimeout(resolve, time));
+
 beforeEach(() => {
   document.monetization = new MonetizationFake();
   monetize.refresh();
@@ -60,6 +63,22 @@ describe('Watcher API', () => {
 
     document.monetization.fire('monetizationstop');
     expect.assertions(2);
+  });
+
+  test('it resolve on pointer changed events', () => {
+    monetize.when('pointer_changed').then(() => {
+      expect(true).toBeTruthy();
+    });
+
+    monetize.set('$test');
+
+    setTimeout(() => {
+      monetize.set('$test2');
+    }, 5);
+
+    return wait(10).then(() => {
+      expect.assertions(2);
+    });
   });
 
   test('it does not recognize invalid events', () => {

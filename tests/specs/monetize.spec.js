@@ -93,21 +93,23 @@ describe('Core API', () => {
 
     const checked = [];
     let timer = null;
+    let itIncludesWrongPointers = false;
 
-    monetize.cycle(pointers, 5).then(() => {
+    monetize.cycle(pointers, 2).then(() => {
       timer = setInterval(() => {
         if (!checked.includes(monetize.activePointer)) {
           checked.push(monetize.activePointer);
         }
 
-        if (checked.length === pointers.length) {
-          clearInterval(timer);
+        if (pointers.indexOf(monetize.activePointer) === -1) {
+          itIncludesWrongPointers = true;
         }
-      }, 2);
+      }, 1);
     });
 
     return wait(20).then(() => {
       clearInterval(timer);
+      expect(itIncludesWrongPointers).toBeFalsy();
       expect(checked.length).toEqual(pointers.length);
     });
   });
@@ -231,7 +233,7 @@ describe('Core API', () => {
       if (picked.hasOwnProperty(item)) {
         picked[item] += 1;
       }
-    }, 1);
+    }, 2);
 
     expect.assertions(1);
     return wait(40).then(() => {

@@ -41,7 +41,8 @@ class Monetize {
     // Monetization meta tag holder.
     this.tag = null;
 
-    this.activePointer = null;
+    // todo: Add watcher for pointer changes.
+    this.activePointer = this.detectPointerFromMetaTag();
 
     this.init();
     this._observeHead();
@@ -71,6 +72,11 @@ class Monetize {
   _observeHead() {
     (new MutationObserver(() => {
       const pointer = this.detectPointerFromMetaTag();
+
+      if (pointer && pointer !== this.activePointer) {
+        this.watcher.dispatchCustomEvent('pointer_changed', pointer);
+      }
+
       this.activePointer = pointer || null;
     })).observe(document.head, { childList: true });
   }
@@ -130,7 +136,7 @@ class Monetize {
    * It must return a pointer otherwise it will be ignored.
    * @returns {PromiseLoop}
    */
-  cycle(pointers, timeout = 3000, callback) {
+  cycle(pointers, timeout = 3000, callback = null) {
     // Remove old intervals.
     clearInterval(this._timer);
 
@@ -145,7 +151,7 @@ class Monetize {
 
       if (!pointer) {
         pointer = pointers[lastIndex];
-        lastIndex = lastIndex <= pointers.length - 1 ? lastIndex + 1 : 0;
+        lastIndex = lastIndex + 1 <= pointers.length - 1 ? lastIndex + 1 : 0;
       }
 
       this.set(pointer);
@@ -311,7 +317,7 @@ class Monetize {
    * @returns {PromiseLoop}
    */
   when(...args) {
-    return this.watcher.when.apply(null, args);
+    return this.watcher.when(...args);
   }
 
   /**

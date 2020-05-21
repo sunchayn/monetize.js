@@ -21,6 +21,20 @@ class Watcher {
   constructor() {
     // Initial event that triggered the watcher.
     this.event = null;
+
+    /**
+     * List of allowed custom events.
+     * @type {string[]}
+     */
+    this.customEvents = [
+      'pointer_changed',
+    ];
+
+    /**
+     * Custom event listeners.
+     * @type {*[]}
+     */
+    this.listeners = [];
   }
 
   /**
@@ -39,10 +53,21 @@ class Watcher {
    * Register the event listener for amount updates.
    * @param {Amount} amount amount utility to use.
    */
-  // eslint-disable-next-line class-methods-use-this
   watchAmount(amount) {
     document.monetization.addEventListener('monetizationprogress', (evt) => {
       amount.updatePointerPaymentData(evt.detail);
+    });
+  }
+
+  /**
+   * Dispatch a custom event.
+   * @param {string} event
+   * @param {*} data Data to pass to Event listener
+   * @returns {*}
+   */
+  dispatchCustomEvent(event, data) {
+    return this.listeners[event] && this.listeners[event].forEach((listener) => {
+      listener(data);
     });
   }
 
@@ -51,18 +76,40 @@ class Watcher {
    * @param {string} event
    * @returns {PromiseLoop}
    */
-  // eslint-disable-next-line class-methods-use-this
   when(event) {
     return new PromiseLoop((resolve, reject) => {
-      if (!eventMapping[event]) {
-        reject(new Error(`Event '${event}' is not supported.`));
-        return true;
+      if (!this._resolveCustomEvent(event, resolve)) {
+        if (!eventMapping[event]) {
+          reject(new Error(`Event '${event}' is not supported.`));
+          return true;
+        }
+
+        document.monetization.addEventListener(eventMapping[event], (evt) => {
+          resolve(evt.detail);
+        });
+      }
+    });
+  }
+
+  /**
+   * Add event listener for custom events that are not part of Monetization API
+   * @param {string} event Custom event to add
+   * @param {function} callback Event listener
+   * @returns {boolean} indicates whether the event listener has been attached
+   * @private
+   */
+  _resolveCustomEvent(event, callback) {
+    if (this.customEvents.includes(event)) {
+      if (!this.listeners[event]) {
+        this.listeners[event] = [];
       }
 
-      document.monetization.addEventListener(eventMapping[event], (evt) => {
-        resolve(evt.detail);
+      this.listeners[event].push((data) => {
+        callback(data);
       });
-    });
+
+      return true;
+    }
   }
 }
 
