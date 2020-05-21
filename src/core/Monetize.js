@@ -72,6 +72,11 @@ class Monetize {
   _observeHead() {
     (new MutationObserver(() => {
       const pointer = this.detectPointerFromMetaTag();
+
+      if (pointer && pointer !== this.activePointer) {
+        this.watcher.dispatchCustomEvent('pointer_changed', pointer);
+      }
+
       this.activePointer = pointer || null;
     })).observe(document.head, { childList: true });
   }
@@ -312,7 +317,7 @@ class Monetize {
    * @returns {PromiseLoop}
    */
   when(...args) {
-    return this.watcher.when.apply(null, args);
+    return this.watcher.when(...args);
   }
 
   /**
