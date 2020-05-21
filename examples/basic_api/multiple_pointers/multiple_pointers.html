@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Multiple pointers — Monetize.js</title>
+  <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="h-screen border-8 border-gray-200 flex md:items-center justify-center">
+  <div class="pb-64 md:pb-4 p-4  overflow-y-auto md:p-8 flex-1 max-h-full max-w-3xl">
+    <h1 class="mb-4 text-xl">Picked pointer: <span id="js-pointer" style="transition: opacity 300ms ease;">n/a</span></h1>
+
+    <div class="md:flex">
+      <div class="md:w-1/2 mb-4 md:mb-0">
+        <h2 class="text-gray-700 uppercase">Randomly</h2>
+
+        <p class="mb-4">
+          [<br />
+          &nbsp;$example/alice,<br />
+          &nbsp;$example/bob,<br />
+          &nbsp;$example/jhon,<br />
+          ]
+        </p>
+
+        <button class="bg-blue-700 text-white leading-none p-1 p-2 rounded hover:shadow-outline hover:underline" id="js-activate-random">Pick pointer</button>
+      </div>
+
+      <div class="md:w-1/2">
+        <h2 class="text-gray-700 uppercase">Probabilistic</h2>
+
+        <p class="mb-4">
+          {<br />
+          &nbsp;$example.probabilistic/alice: <span class="font-bold">0.55</span>,<br />
+          &nbsp;$example.probabilistic/bob: <span class="font-bold">0.05</span>,<br />
+          &nbsp;$example.probabilistic/jhon: <span class="font-bold">0.4</span>,<br />
+          }
+        </p>
+
+        <button class="bg-blue-700 text-white leading-none p-1 p-2 rounded hover:shadow-outline hover:underline" id="js-activate-probabilistic">Pick pointer</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/monetize@latest/dist/monetize.js"></script>
+  <script src="https://unpkg.com/monetize@latest/dist/simulator.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
