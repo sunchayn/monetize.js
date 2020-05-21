@@ -80,6 +80,13 @@ monetize.when('progress').then((event) => {
 
 You can learn more about the event object passed to each event from the list by exploring [Monetization Javascript API](https://webmonetization.org/docs/api#browser-events) documentation.
 
+#### Custom events
+The library is aimed to support custom event too. For now it supports the following custom event:
+
+| Event                	| Description        	|
+|-------------------	|----------------------	|
+| pointer_changed      	| Fired when a new pointer has been detected in the head.    	|
+
 ### Dynamic pointers
 The library provide multiple ways for dynamic pointer configuration:
 
@@ -308,8 +315,13 @@ The `monetize` object leverage an extra API that keeps track of the streamed amo
 
 The following is basic example on how to get the total streamed amount and currency for a given pointer.
 
+*Note: to use Amount API you must use one of these methods first: `pointer`, `pluck`, `cycle` or `probabilisticCycle` to setup the basic infrastructure for the API.
+
 ```javascript
 const pointer = '$example';
+
+monetize.pointer(pointer);
+
 // Get the Raw amount sent.
 const amount = monetize.amount.getPointerTotal(pointer);
 // => output: 5258
@@ -326,6 +338,8 @@ const currency = monetize.amount.getPointerCurrency(pointer);
 If your page is using multiple pointers at the same time you can get the total streamed amount grouped by currency using `total` method:
 
 ```javascript
+monetize.cycle(...);
+
 // Raw total
 const total = monetize.amount.total()
 
