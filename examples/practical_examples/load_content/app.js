@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * Monetize.js demo
  * Loading exclusive content example.
@@ -68,3 +69,17 @@ function hideBonusContent() {
   loader.classList.add('hidden');
   host.classList.add('hidden');
 }
+
+
+    monetize.pointer('$example/bob').then((watcher) => {
+      watcher.when('progress').then((event) => {
+        loadExlusiveContent();
+      });
+
+      watcher.when('stop').then((event) => {
+        hideExlusiveContent();
+      });
+    });
+
+function loadExlusiveContent() {}
+function hideExlusiveContent() {}

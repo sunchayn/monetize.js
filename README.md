@@ -12,9 +12,9 @@ Monetize.js is an Event-driven library that serves as a wrapper and simulator fo
 
 - Flexible pointers management (Static and Dynamic).
 - Promise-like syntax to watch events.
-- Customizable cycle-through a list of pointers.
-- Supports probabilistic cycle-through a list of pointers.
-- Calculates the total amount grouped by currency.
+- Customizable cycle-through list of pointers.
+- Support probabilistic cycle-through list of pointers.
+- Calculate the total amount grouped by currency.
 - Powerful simulator that works without iframe or installed extension.
 
 ## Installing Monetize.js
@@ -170,7 +170,7 @@ monetize.pluck(pointers).then(...)
 monetize.pluck(pointers).then(...).catch(...);
 ```
 
-If you would like to assign a probabilty for each pointer you can do that by passing an `object` to `pluck` function like the example below:
+If you would like to assign a probability for each pointer you can do that by passing an `object` to `pluck` function like the example below:
 
 ```javascript
 // Probability for each pointer. Must sum to 1
@@ -191,7 +191,7 @@ monetize.pluck(pointers).then(...).catch(...);
 ```
 
 #### Cycle through Pointers
-Sometimes picking a single pointer on page load isn't enough. For thing case, you may consider using `cycle` and `probabilisticCycle` to cycle through a list of `pointers` for a given `timeout`
+Sometimes picking a single pointer on page load isn't enough. For that, you may consider using `cycle` and `probabilisticCycle` to cycle through a list of `pointers` for a given `timeout`
 
 **Cycle**
 
@@ -315,7 +315,7 @@ The `monetize` object leverage an extra API that keeps track of the streamed amo
 
 The following is basic example on how to get the total streamed amount and currency for a given pointer.
 
-*Note: to use Amount API you must use one of these methods first: `pointer`, `pluck`, `cycle` or `probabilisticCycle` to setup the basic infrastructure for the API.
+*Note: to use Amount API you must use one of these methods first: `pointer`, `pluck`, `cycle` or `probabilisticCycle` to setup the basic infrastructure for the API.*
 
 ```javascript
 const pointer = '$example';
