@@ -52,7 +52,7 @@
     "mutationobserver-shim": "^0.3.5",
     "sass": "^1.26.5",
     "sass-loader": "^8.0.2",
-    "semantic-release": "^17.0.7",
+    "semantic-release": "^19.0.3",
     "style-loader": "^1.2.1",
     "uuid": "^8.0.0",
     "webpack": "^4.43.0",
